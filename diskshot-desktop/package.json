@@ -1,0 +1,14 @@
+{
+  "name": "deskshot",
+  "main": "electron/main.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix react-ui\" \"wait-on http://localhost:5173 && electron .\"",
+    "build": "npm run build --prefix react-ui",
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "electron": "^35.1.4",
+    "wait-on": "^8.0.3"
+  }
+}
