@@ -11,7 +11,7 @@ function createWindow() {
       preload: path.join(__dirname, 'preload.js'),
     },
   });
-
+  
   if (isDev) {
     win.loadURL('http://localhost:5173');
   } else {

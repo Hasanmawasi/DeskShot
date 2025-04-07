@@ -1,6 +1,7 @@
-services:
+version: '3.8'
 
-   server:
+services:
+  server:
     build:
       context: .
       dockerfile: Dockerfile
@@ -8,10 +9,10 @@ services:
     volumes:
       - ./diskshot-laravel:/var/www/html
     ports:
-      - "8000:8000"
+      - "8000:80"
     environment:
       - DB_CONNECTION=mysql
-      - DB_HOST=database
+      - DB_HOST=mysql_db
       - DB_PORT=3306
       - DB_DATABASE=diskshotdb
       - DB_USERNAME=root
@@ -20,7 +21,7 @@ services:
       - database
     restart: always
 
-   database:
+  database:
     image: mysql:8.0
     container_name: mysql_db
     environment:
@@ -31,6 +32,5 @@ services:
     volumes:
       - dbdata:/var/lib/mysql
 
-      
 volumes:
   dbdata:
