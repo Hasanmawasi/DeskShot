@@ -1,0 +1,14 @@
+docker exec -it laravel_app bash
+curl -sS https://getcomposer.org/installer | php
+mv composer.phar /usr/local/bin/composer
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate
+
+chown -R www-data:www-data storage bootstrap/cache
+chmod -R 775 storage bootstrap/cache
+
+php artisan config:clear
+php artisan config:cache
+exit
