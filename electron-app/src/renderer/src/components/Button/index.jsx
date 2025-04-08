@@ -7,7 +7,7 @@ const Button = ({ label, onClick, type = "button", style}) => {
     <button
       type={type}
       onClick={onClick}
-      className={`mt-3 submit-btn ${style}`}
+      className={` submit-btn ${style}`}
     >
       {label}
     </button>

@@ -9,6 +9,6 @@
   cursor: pointer;
 }
 .submit-btn:hover{
-  background: rgb(39, 36, 36);
+  background: #2a88c3;
   transition: ease-in .4s;
 }
