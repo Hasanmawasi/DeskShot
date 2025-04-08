@@ -4,15 +4,35 @@ import InputField from '../../components/Input';
 import Button from '../../components/Button';
 const UploadPhoto = () => {
   const [imagePreview, setImagePreview] = useState("src/assets/camira.jpg");
-
+  const [imagePath, setImagePath] = useState(null);
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-const reader = new FileReader();
-reader.onloadend = () => {
-  setImagePreview(reader.result); // base64 data URL
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImagePreview(reader.result); // base64 data URL
+      setImagePath(reader.result); // base64 data URL
+    };
+    reader.readAsDataURL(file);
 };
-reader.readAsDataURL(file);
-  };
+const handleSaveImage = async () => {
+  if (!imagePath) {
+    alert("Please upload an image first.");
+    return;
+  }
+
+  try {
+    const result = await window.electronAPI.saveImage(imagePath);
+    if (result.success) {
+      alert("✅ Image saved successfully to: " + result.path);
+    } else {
+      alert("❌ Failed to save: " + result.error);
+    }
+  } catch (err) {
+    console.error("IPC error:", err);
+    alert("Unexpected error: " + err.message);
+  }
+};
+
   return (
 
     <div className='upload-container'>
@@ -40,6 +60,7 @@ reader.readAsDataURL(file);
               <Button
                 label={"Save"}
                 style={"save-button"}
+                onClick={handleSaveImage}
               />
 
           </div>
