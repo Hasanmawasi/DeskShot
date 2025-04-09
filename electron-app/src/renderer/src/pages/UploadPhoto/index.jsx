@@ -2,18 +2,25 @@ import React , {useState} from 'react';
 import "./style.css"
 import InputField from '../../components/Input';
 import Button from '../../components/Button';
+import { useDispatch } from 'react-redux'
+import { addImage } from '../../Slices/pathsSlice';
 const UploadPhoto = () => {
+  const dispatch = useDispatch();
   const [imagePreview, setImagePreview] = useState("src/assets/camira.jpg");
   const [imagePath, setImagePath] = useState(null);
+
   const handleFileChange = (e) => {
     const file = e.target.files[0];
+    console.log(file);
     const reader = new FileReader();
     reader.onloadend = () => {
       setImagePreview(reader.result); // base64 data URL
-      setImagePath(reader.result); // base64 data URL
+      setImagePath(reader.result);
+      // base64 data URL
     };
     reader.readAsDataURL(file);
 };
+
 const handleSaveImage = async () => {
   if (!imagePath) {
     alert("Please upload an image first.");
@@ -23,9 +30,15 @@ const handleSaveImage = async () => {
   try {
     const result = await window.electronAPI.saveImage(imagePath);
     if (result.success) {
-      alert("✅ Image saved successfully to: " + result.path);
+      dispatch(addImage({
+        name:result.name,
+        path:result.path,
+        createdAt:result.createdAt,
+        size:result.size}))
+      alert(" Image saved successfully to: " + result.path);
+
     } else {
-      alert("❌ Failed to save: " + result.error);
+      alert(" Failed to save: " + result.error);
     }
   } catch (err) {
     console.error("IPC error:", err);

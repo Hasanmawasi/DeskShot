@@ -26,20 +26,30 @@ function createWindow() {
   ipcMain.handle('save-image', async (_, base64Image) => {
     try {
       // Decode base64 string
-      const buffer = Buffer.from(base64Image.split(',')[1], 'base64'); // Remove the prefix "data:image/jpeg;base64,"
+      const buffer = Buffer.from(base64Image.split(',')[1], 'base64');
 
       // Create the directory if it doesn't exist
       const galleryPath = path.join(app.getPath('pictures'), 'electron-app');
       if (!fs.existsSync(galleryPath)) fs.mkdirSync(galleryPath, { recursive: true });
 
       // Define the file name and path
-      const fileName = `image-${Date.now()}.jpg`; // You can generate dynamic names or use the original file name
+      const fileName = `image-${Date.now()}.jpg`;
       const destPath = path.join(galleryPath, fileName);
 
-      // Save the image as a file
+      // Save the image
       fs.writeFileSync(destPath, buffer);
 
-      return { success: true, path: destPath };
+      // Get file stats
+      const stats = fs.statSync(destPath);
+      const createdAt = stats.birthtime.toISOString().split('T')[0];
+      return {
+        success: true,
+        path: destPath,
+        name: fileName,
+        createdAt, // Date object (can format in frontend if needed)
+        size: stats.size,           // In bytes
+      };
+
     } catch (err) {
       console.error('Error saving image:', err);
       return { success: false, error: err.message };
@@ -60,18 +70,29 @@ function createWindow() {
       // Filter only image files
       const imageFiles = files.filter((file) => /\.(jpg|jpeg|png|gif)$/i.test(file));
 
-      // Return image file paths as `file://` URIs
-      const imagePaths = imageFiles.map((file) => {
+      // Build an array of image info objects
+      const imageData = imageFiles.map((file) => {
+
         const filePath = path.join(galleryPath, file);
-        return `${filePath.replace(/\\/g, '/')}`; // Ensure correct URI format on Windows
+        const stats = fs.statSync(filePath);
+        const createdAt = stats.birthtime.toISOString().split('T')[0];
+        // Convert size to KB, rounded to 2 decimal places
+        const sizeKB = (stats.size / 1024).toFixed(2);
+        return {
+          name: file,
+          path: filePath.replace(/\\/g, '/'), // Normalize Windows paths
+          createdAt,
+          size: sizeKB, // in bytes
+        };
       });
 
-      return { success: true, images: imagePaths };
+      return { success: true, images: imageData };
     } catch (err) {
       console.error('Error fetching images:', err);
       return { success: false, error: err.message };
     }
   });
+
   ipcMain.handle('delete-image', async (_, imagePath) => {
     try {
       const galleryPath = path.join(app.getPath('pictures'), 'electron-app');

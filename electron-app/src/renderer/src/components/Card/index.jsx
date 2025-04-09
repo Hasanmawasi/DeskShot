@@ -1,23 +1,22 @@
 import React , {useState} from 'react';
 import "./style.css"
-import ImageModal from '../Modal';
-const Card = ({imageSrc , deleteFunc}) => {
+import ImageModal from '../ImageModal';
+const Card = ({imageSrc , deleteFunc , imageName , date , size}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   return (
     <div className='card-container flex flex-col'>
 
-      <div className="image-container" onClick={
-        () => setIsModalOpen(true)
-      }>
+      <div className="image-container">
 
         <ImageModal
         imageUrl={imageSrc}
          isOpen={isModalOpen}
         onClose={()=>{
-           console.log("close");
           setIsModalOpen(false)
         }} />
-        <img className='image' src={imageSrc} alt="picture" />
+        <img className='image' src={imageSrc} alt="picture"  onClick={
+        () => setIsModalOpen(true)
+      }/>
         <div className='delete-container' onClick={deleteFunc}>
           <img className='delete-icon'  src='src/assets/delete.svg'  />
         </div>
@@ -25,15 +24,21 @@ const Card = ({imageSrc , deleteFunc}) => {
       <div className="bottom">
         <div className=" flex flex-row justify-space-between mt-3">
           <div className="image-name">
-            <p>image.pmg</p>
+            <p>{imageName}</p>
           </div>
           <div className="edit-container">
             <img className='edit-icon' src="src/assets/edit.svg" alt="picture" />
           </div>
         </div>
-        <div className="created-at mt-2">
-          2/4/2025
+        <div className="flex flex-row justify-space-between mt-2">
+          <div className="created-at ">
+            {date}
+          </div>
+          <div className="size">
+            <p>{size}KB</p>
+          </div>
         </div>
+
       </div>
     </div>
   );
