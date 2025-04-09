@@ -14,6 +14,7 @@ function createWindow() {
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
+      webSecurity: false,
       contextIsolation: true,
       nodeIntegration: false,
       preload: join(__dirname, '../preload/index.js'),
@@ -45,6 +46,51 @@ function createWindow() {
     }
   });
 
+  ipcMain.handle('get-saved-images', async () => {
+    try {
+      const galleryPath = path.join(app.getPath('pictures'), 'electron-app');
+
+      // Check if folder exists
+      if (!fs.existsSync(galleryPath)) {
+        return { success: false, error: 'No images found.' };
+      }
+
+      const files = fs.readdirSync(galleryPath);
+
+      // Filter only image files
+      const imageFiles = files.filter((file) => /\.(jpg|jpeg|png|gif)$/i.test(file));
+
+      // Return image file paths as `file://` URIs
+      const imagePaths = imageFiles.map((file) => {
+        const filePath = path.join(galleryPath, file);
+        return `${filePath.replace(/\\/g, '/')}`; // Ensure correct URI format on Windows
+      });
+
+      return { success: true, images: imagePaths };
+    } catch (err) {
+      console.error('Error fetching images:', err);
+      return { success: false, error: err.message };
+    }
+  });
+  ipcMain.handle('delete-image', async (_, imagePath) => {
+    try {
+      const galleryPath = path.join(app.getPath('pictures'), 'electron-app');
+      const filePath = path.join(galleryPath, imagePath);
+
+      // Check if the file exists
+      if (!fs.existsSync(filePath)) {
+        return { success: false, error: 'Image not found.' };
+      }
+
+      // Delete the image file
+      fs.unlinkSync(filePath);
+
+      return { success: true, message: 'Image deleted successfully.' };
+    } catch (err) {
+      console.error('Error deleting image:', err);
+      return { success: false, error: err.message };
+    }
+  });
   mainWindow.on('ready-to-show', () => {
     mainWindow.show();
   });

@@ -14,6 +14,8 @@ if (process.contextIsolated) {
 
     contextBridge.exposeInMainWorld('electronAPI', {
       saveImage: (filePath) => ipcRenderer.invoke('save-image', filePath),
+      getSavedImages: () => ipcRenderer.invoke('get-saved-images'),
+      deleteImage: (imagePath) => ipcRenderer.invoke('delete-image', imagePath),
     });
 
   } catch (error) {

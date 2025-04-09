@@ -20,7 +20,9 @@
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^4.0.0",
-    "@iconify/react": "^5.2.1"
+    "@iconify/react": "^5.2.1",
+    "@reduxjs/toolkit": "^2.6.1",
+    "react-redux": "^9.2.0"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config": "^2.0.0",
