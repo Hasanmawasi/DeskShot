@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './style.css';
 
 const ImageModal = ({ imageUrl , isOpen , onClose}) =>  {
-  console.log("open"  , isOpen)
+
   if (isOpen == false) return null;
 
   return (
