@@ -1,7 +1,7 @@
 import React , {useState} from 'react';
 import "./style.css"
 import ImageModal from '../Modal';
-const Card = () => {
+const Card = ({imageSrc , deleteFunc}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   return (
     <div className='card-container flex flex-col'>
@@ -9,15 +9,16 @@ const Card = () => {
       <div className="image-container" onClick={
         () => setIsModalOpen(true)
       }>
+
         <ImageModal
-        imageUrl={"src/assets/logo.png"}
+        imageUrl={imageSrc}
          isOpen={isModalOpen}
         onClose={()=>{
            console.log("close");
           setIsModalOpen(false)
         }} />
-        <img className='image' src="src/assets/logo.png" alt="picture" />
-        <div className='delete-container'>
+        <img className='image' src={imageSrc} alt="picture" />
+        <div className='delete-container' onClick={deleteFunc}>
           <img className='delete-icon'  src='src/assets/delete.svg'  />
         </div>
       </div>
