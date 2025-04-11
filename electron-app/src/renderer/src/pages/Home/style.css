@@ -1,6 +1,6 @@
 .images-container{
   padding: 15px;
-  justify-content: start;
+  justify-content:start;
   align-items: start;
-
+ margin: 0 auto;
 }

@@ -21,9 +21,9 @@ const Home = () => {
     }
   };
   const deleteImage = async (imageName) => {
-    const result = await window.electronAPI.deleteImage(imageName.name);
+    const result = await window.electronAPI.deleteImage(imageName);
     if (result.success) {
-      console.log(imageName.name)
+      console.log(imageName)
       alert('Image deleted successfully');
     } else {
       alert('Error deleting image: ' + result.error);
@@ -48,8 +48,7 @@ const Home = () => {
             deleteFunc={()=>{
               setIsModalOpen(true)
               setImageNameDelete(image.name)
-            // deleteImage(image);
-            // dispatch(removeImage(image.name))
+         
           }} />
 
           </>
@@ -60,8 +59,8 @@ const Home = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onConfirm={()=>{
+          deleteImage(imageNameDelete)
           dispatch(removeImage(imageNameDelete))
-          deleteImage(image);
           setIsModalOpen(false)
         }}
       />
