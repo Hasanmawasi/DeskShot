@@ -23,10 +23,13 @@
 
 .card-container{
   width: 245px;
+  max-width: 350px;
   height: 320px;
   border-radius: 7px;
   background-color: #EEEEEE;
+  flex-grow: 1;
 }
+
 .edit-icon img {
   color: white;
 }
@@ -57,4 +60,5 @@
   background-color: #EEEEEE;
   padding: 5px;
   border-radius: 7px;
+
 }

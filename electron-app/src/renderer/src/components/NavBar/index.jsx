@@ -10,6 +10,7 @@ const NavBar = () => {
             <ul className='flex flex-row'>
                 <li><Link to="/home">Home</Link></li>
                 <li><Link to="/uploadPhoto">Upload Photo</Link></li>
+               
             </ul>
             <div>
             {/* <Icon className='setting_icon' icon="line-md:cog-filled-loop" width="24" height="24" /> */}

@@ -1,85 +1,135 @@
-import React , {useState} from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import "./style.css"
-import InputField from '../../components/Input';
+import InputField from "../../components/Input";
 import Button from '../../components/Button';
-import { useDispatch } from 'react-redux'
-import { addImage } from '../../Slices/pathsSlice';
+import { useImageHandler } from '../../hooks/useImageHandler';
+import { useCropHandler } from '../../hooks/useCropHandler';
+import { useImageEffects } from '../../hooks/useImageEffects';
+import { useSaveHandler } from '../../hooks/useSaveHandler';
+import { useCanvasOperations } from '../../hooks/useCanvasOperations';
 const UploadPhoto = () => {
-  const dispatch = useDispatch();
-  const [imagePreview, setImagePreview] = useState("src/assets/camira.jpg");
-  const [imagePath, setImagePath] = useState(null);
+  const {
+    imagePreview,
+    imagePath,
+    canvasRef,
+    containerRef,
+    imageRef,
+    dpr,
+    handleFileChange,
+    setImagePreview,
+    setImagePath
+  } = useImageHandler();
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    console.log(file);
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setImagePreview(reader.result); // base64 data URL
-      setImagePath(reader.result);
-      // base64 data URL
-    };
-    reader.readAsDataURL(file);
-};
+  const {
+    rotationAngle,
+    isBlackWhite,
+    watermarkText,
+    setWatermarkText,
+    rotateImage,
+    toggleBlackWhite
+  } = useImageEffects();
 
-const handleSaveImage = async () => {
-  if (!imagePath) {
-    alert("Please upload an image first.");
-    return;
-  }
+  const { drawImage, redrawCanvasWithOverlay } = useCanvasOperations(
+    canvasRef,
+    imageRef,
+    dpr,
+    rotationAngle,
+    isBlackWhite,
+    watermarkText
+  );
 
-  try {
-    const result = await window.electronAPI.saveImage(imagePath);
-    if (result.success) {
-      dispatch(addImage({
-        name:result.name,
-        path:result.path,
-        createdAt:result.createdAt,
-        size:result.size}))
-      alert(" Image saved successfully to: " + result.path);
+  const {
+    isCropping,
+    setIsCropping,
+    cropStart,
+    cropEnd,
+    cropArea,
+    handleCropStart,
+    handleCropMove,
+    handleCropEnd,
+    applyCrop
+  } = useCropHandler(canvasRef, dpr, drawImage);
 
-    } else {
-      alert(" Failed to save: " + result.error);
-    }
-  } catch (err) {
-    console.error("IPC error:", err);
-    alert("Unexpected error: " + err.message);
-  }
-};
+  const { handleSaveImage } = useSaveHandler(canvasRef);
+
+  // Effect for automatic redraw
+  useEffect(() => {
+    drawImage();
+    redrawCanvasWithOverlay(isCropping, cropStart, cropEnd);
+  }, [imagePath, rotationAngle, isBlackWhite, watermarkText, isCropping, cropStart, cropEnd]);
 
   return (
-
     <div className='upload-container'>
-
-
-      <div className="input-container">
-        <InputField
+    <div className="input-container">
+      <InputField
         label={"photo"}
         placeholder={"Choose your photo"}
         type='file'
+        accept="image/*"
         onChange={handleFileChange}
+      />
+    </div>
+
+    <div className="edit-photo">
+      <div className="upl-image" ref={containerRef}>
+        <canvas
+          ref={canvasRef}
+          onMouseDown={handleCropStart}
+          onMouseMove={handleCropMove}
+          onMouseUp={handleCropEnd}
+          onMouseLeave={handleCropEnd}
+          className='canvas'
+          style={{ cursor: isCropping ? 'crosshair' : '' }}
         />
+      </div>
+      <div className="controls-container">
+        <div className="image-controls">
+          <div className="effects-controls">
+            <h4>Effects:</h4>
+            <button
+              onClick={toggleBlackWhite}
+              className={isBlackWhite ? 'active' : ''}
+            >
+              {isBlackWhite ? 'Color Mode' : 'Black & White'}
+            </button>
           </div>
-        <div className="edit-photo ">
-          <div className="upl-image">
-            <img src={imagePreview} alt="" />
-          </div>
-          <div className="bottom flex flex-row align-center justify-space-between p-1">
-            <div className="icons flex flex-row g-1">
-            <img className='edit-icon' src="src/assets/rotate.svg" alt="picture" />
-             <img className='edit-icon' src="src/assets/crop.svg" alt="picture" />
-             <img className='edit-icon' src="src/assets/effect.svg" alt="picture" />
-            </div>
 
-              <Button
-                label={"Save"}
-                style={"save-button"}
-                onClick={handleSaveImage}
-              />
-
+          <div className="watermark-controls">
+            <h4>Watermark:</h4>
+            <InputField
+              type="text"
+              placeholder="Enter watermark text"
+              value={watermarkText}
+              onChange={(e) => setWatermarkText(e.target.value)}
+            />
           </div>
         </div>
 
+         <div className="bottom flex flex-row align-center justify-space-between p-1">
+          <div className="icons flex flex-row g-1">
+            <img
+              className='edit-icon'
+              src="src/assets/rotate.svg"
+              alt="rotate"
+              onClick={rotateImage}
+            />
+            <img
+              className='edit-icon'
+              src="src/assets/crop.svg"
+              alt="crop"
+              onClick={() => setIsCropping(!isCropping)}
+            />
+          </div>
+
+          <Button
+            label={isCropping ? "Apply Crop" : "Save"}
+            style={"save-button"}
+            onClick={isCropping ? applyCrop : handleSaveImage}
+          />
+        </div>
+      </div>
     </div>
+  </div>
   );
 };
 
