@@ -6,7 +6,7 @@ import Signup from './pages/Signup';
 import Home from './pages/Home';
 import NavBar from './components/NavBar';
 import UploadPhoto from './pages/UploadPhoto';
-import SimpleEditor from './pages/Editor';
+
 function App() {
   const ipcHandle = () => window.electron.ipcRenderer.send('ping')
   const {pathname} = useLocation();
@@ -18,7 +18,7 @@ function App() {
      <Route path='/'  element={<Login />} />
      <Route path='/home'  element={<Home />} />
      <Route path='/uploadphoto'  element={<UploadPhoto />} />
-   
+
 
      <Route path='/login'  element={<Login />} />
      <Route path='/signup'  element={<Signup />} />
