@@ -1,59 +1,59 @@
-// import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import InputField from '../../components/Input';
 import Button from '../../components/Button';
-import { Link} from 'react-router-dom';
+import { Link , useNavigate} from 'react-router-dom';
 import "../Login/style.css";
-// import { request } from '../../utils/request';
+import { request } from '../../utils/request';
 const Signup = () => {
-    // const [message ,setMessage]= useState("");
-    // const navigate = useNavigate();
-    // const [signup, setSignUp] = useState({
-    //     name:'',
-    //     email:"",
-    //     password:""
-    // })
-    // const submit = async ()=>{
-    //     try {
-    //         const response = await request({
-    //             method:"POST",
-    //             path:'signup',
-    //             data:{
-    //                 ...signup
-    //             }
-    //         })
-    //        console.log(response);
-    //         if(response?.success){
-    //             localStorage.setItem("token", `Bearer ${response.user.token}`);
-    //             navigate('/home')
-    //         }else{
-    //             setMessage(response.response.data.message)
-    //         }
-    //     } catch (error) {
-    //         console.log("Erorr", error.response);
-    //     }
-    // }
-    // useEffect(()=>{
-    //     setTimeout(()=>{
-    //         setMessage("")
-    //     },2000)
-    // },[message])
+    const [message ,setMessage]= useState("");
+    const navigate = useNavigate();
+    const [signup, setSignUp] = useState({
+        name:'',
+        email:"",
+        password:""
+    })
+    const submit = async ()=>{
+        try {
+            const response = await request({
+                method:"POST",
+                path:'signup',
+                data:{
+                    ...signup
+                }
+            })
+           console.log(response);
+            if(response?.success){
+                localStorage.setItem("token", `Bearer ${response.token}`);
+                navigate('/home')
+            }else{
+                setMessage(response.response.data.message)
+            }
+        } catch (error) {
+            console.log("Erorr", error.response);
+        }
+    }
+    useEffect(()=>{
+        setTimeout(()=>{
+            setMessage("")
+        },2000)
+    },[message])
     return (
         <div className='login-body flex align-center justify-center'>
         <div className='flex flex-col justify-center align-center login-card '>
             <h1>Sign Up</h1>
-            {/* <h3 className='failtext' >{message !== ""?message : ''}</h3> */}
+            <h3 className='failtext' >{message !== ""?message : ''}</h3>
             <InputField
             container='mt-1 width-80'
             label={"Name"}
             type='text'
             placeholder='Enter Your Name'
-            // value={signup.name}
-            // onChange={
-            //     (e)=> setSignUp({
-            //         ...signup,
-            //         name:e.target.value,
-            //     })
-            // }
+            value={signup.name}
+            onChange={
+                (e)=> setSignUp({
+                    ...signup,
+                    name:e.target.value,
+                })
+            }
             style="mt-4"
             />
             <InputField
@@ -61,13 +61,13 @@ const Signup = () => {
             label={"Email"}
             type='email'
             placeholder='Example@gmail.com'
-            // value={signup.email}
-            // onChange={
-            //     (e)=> setSignUp({
-            //         ...signup,
-            //         email:e.target.value,
-            //     })
-            // }
+            value={signup.email}
+            onChange={
+                (e)=> setSignUp({
+                    ...signup,
+                    email:e.target.value,
+                })
+            }
             style="mt-4"
             />
              <InputField
@@ -75,13 +75,13 @@ const Signup = () => {
             label={"Password"}
             type='password'
             placeholder='*******'
-            // value={signup.password}
-            // onChange={
-            //     (e)=> setSignUp({
-            //         ...signup,
-            //         password:e.target.value,
-            //     })
-            // }
+            value={signup.password}
+            onChange={
+                (e)=> setSignUp({
+                    ...signup,
+                    password:e.target.value,
+                })
+            }
             style="mt-4"
             />
             <div className='form-link mt-3'>
@@ -90,7 +90,7 @@ const Signup = () => {
             </div>
             <Button
              label="Sign Up"
-            // onClick={submit}
+            onClick={submit}
             />
         </div>
         </div>
