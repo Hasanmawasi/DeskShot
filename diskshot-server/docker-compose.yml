@@ -17,6 +17,7 @@ services:
       - DB_DATABASE=diskshotdb
       - DB_USERNAME=root
       - DB_PASSWORD=1234
+    command: /startup.sh
     depends_on:
       - database
     restart: always

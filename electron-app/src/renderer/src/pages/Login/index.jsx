@@ -21,7 +21,7 @@ const Login = () => {
              }
             })
             if(response.success){
-                localStorage.setItem("token", `Bearer ${response.user.token}`);
+                localStorage.setItem("token", `Bearer ${response.token}`);
                 navigate('/home')
             }else{
                     setMessage(response.response.data.message)
