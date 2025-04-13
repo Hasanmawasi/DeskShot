@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Models\Log;
 
 class AuthController extends Controller
 {
@@ -50,13 +51,10 @@ class AuthController extends Controller
         $user = new User;
         $user->name = $request['name'];
         $user->email = $request['email'];
-
         $user->password = bcrypt($request['password']);
         $user->save();
-
         // Create an access token using Passport
         $token = $user->createToken('authToken')->accessToken;
-
 
         return response()->json([
             'success' => true,

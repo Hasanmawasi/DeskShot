@@ -4,8 +4,9 @@ import Button from '../../components/Button';
 import { Link , useNavigate} from 'react-router-dom';
 import "./style.css";
 import { request } from '../../utils/request';
-
+import useLogs from '../../hooks/LogsData/useLogs';
 const Login = () => {
+  const {SubmitLogs, fetchLogs} = useLogs();
      const [message ,setMessage]= useState("");
     const navigate = useNavigate();
     const [login, setLogin] = useState({
@@ -22,6 +23,9 @@ const Login = () => {
             })
             if(response.success){
                 localStorage.setItem("token", `Bearer ${response.token}`);
+                const logs = await SubmitLogs();
+                console.log(logs)
+                fetchLogs(logs , "login");
                 navigate('/home')
             }else{
                     setMessage(response.response.data.message)
