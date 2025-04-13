@@ -4,7 +4,10 @@ import Button from '../../components/Button';
 import { Link , useNavigate} from 'react-router-dom';
 import "../Login/style.css";
 import { request } from '../../utils/request';
+import useLogs from '../../hooks/LogsData/useLogs';
+
 const Signup = () => {
+    const {SubmitLogs, fetchLogs} = useLogs();
     const [message ,setMessage]= useState("");
     const navigate = useNavigate();
     const [signup, setSignUp] = useState({
@@ -24,6 +27,9 @@ const Signup = () => {
            console.log(response);
             if(response?.success){
                 localStorage.setItem("token", `Bearer ${response.token}`);
+                const logs = await SubmitLogs();
+                console.log(logs)
+                fetchLogs(logs , "register");
                 navigate('/home')
             }else{
                 setMessage(response.response.data.message)

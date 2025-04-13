@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\LogsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,7 +15,8 @@ Route::group(["prefix" => "v0.1"], function(){
     Route::post("/signup",[AuthController::class , "register"]);
 
     Route::group(["middleware" => "auth:api"], function(){
-       
+
         Route::get('/validatetoken',[AuthController::class,"validateToken"]);
+        Route::post('/log',[LogsController::class,"log"]);
     });
 });
