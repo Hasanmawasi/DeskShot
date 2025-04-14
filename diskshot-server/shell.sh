@@ -1,6 +1,5 @@
-#!/bin/bash
+#!/bin/sh
 
-#!/bin/bash
 
 echo "Running Laravel setup..."
 
