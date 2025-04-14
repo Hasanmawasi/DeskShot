@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\SignupRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
@@ -9,19 +11,15 @@ use App\Models\Log;
 
 class AuthController extends Controller
 {
-    public function login(Request $request)
+    public function login(LoginRequest $request)
 {
 
-    $request->validate([
-        'email' => 'required|string|email',
-        'password' => 'required|string',
-    ]);
+    $validated = $request->validated();
 
 
-    if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+    if (Auth::attempt(['email' => $validated['email'], 'password' => $validated['password']])) {
 
         $user = Auth::user();
-
        /** @var \App\Models\User $user */
         $token = $user->createToken('authToken')->accessToken;
 
@@ -38,20 +36,15 @@ class AuthController extends Controller
     ], 401);
 }
 
-    public function register(Request $request)
+    public function register(SignupRequest $request)
     {
 
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6',
-        ]);
-
+        $validated = $request->validated();
 
         $user = new User;
-        $user->name = $request['name'];
-        $user->email = $request['email'];
-        $user->password = bcrypt($request['password']);
+        $user->name = $validated['name'];
+        $user->email = $validated['email'];
+        $user->password = bcrypt($validated['password']);
         $user->save();
         // Create an access token using Passport
         $token = $user->createToken('authToken')->accessToken;
