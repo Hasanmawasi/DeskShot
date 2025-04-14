@@ -6,6 +6,7 @@ import Signup from './pages/Signup';
 import Home from './pages/Home';
 import NavBar from './components/NavBar';
 import UploadPhoto from './pages/UploadPhoto';
+import Chat from './pages/Chats';
 
 function App() {
   const ipcHandle = () => window.electron.ipcRenderer.send('ping')
@@ -18,6 +19,7 @@ function App() {
      <Route path='/'  element={<Login />} />
      <Route path='/home'  element={<Home />} />
      <Route path='/uploadphoto'  element={<UploadPhoto />} />
+     <Route path='/chats'  element={<Chat />} />
 
 
      <Route path='/login'  element={<Login />} />
