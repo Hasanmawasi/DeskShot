@@ -13,7 +13,7 @@ function App() {
   const {pathname} = useLocation();
   return (
     <>
-   {pathname !== "/login" && pathname !== "/signup"  && <NavBar /> }
+   {pathname !== "/login" && pathname !== "/signup" && pathname !== "/" && <NavBar /> }
     <Routes >
 
      <Route path='/'  element={<Login />} />
