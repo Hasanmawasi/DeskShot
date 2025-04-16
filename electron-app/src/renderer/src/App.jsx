@@ -20,9 +20,6 @@ function App() {
      <Route path='/home'  element={<Home />} />
      <Route path='/uploadphoto'  element={<UploadPhoto />} />
      <Route path='/chats'  element={<Chat />} />
-
-
-     <Route path='/login'  element={<Login />} />
      <Route path='/signup'  element={<Signup />} />
     </Routes>
    </>

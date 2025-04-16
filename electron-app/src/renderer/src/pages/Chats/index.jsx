@@ -14,9 +14,8 @@ const Chat = () => {
   const messages = useSelector((state)=> state.messages.messageArray)
   const chatContainerRef = useRef(null);
   const socket = getSocket();
+
   const [typing, setTyping]   = useState("");
-
-
 
     const handleDis = async ()=>{
       const data = await fetchMessages();
@@ -25,17 +24,20 @@ const Chat = () => {
         dispatch(getMessages(data.messages))
       }
     }
+
     useEffect(()=>{
       if (chatContainerRef.current) {
         chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
       }
     },[messages]);
-    
+
   useEffect(() => {
-    handleDis()
+    handleDis();
+
     socket.on("connect",() =>
        console.log("Connected to server!", socket.id)
           );
+          
     const onReceive = (msg) => {
       dispatch(addMessage({ message: msg, created_at: "now", user: { name: "You" } }));
     };
@@ -43,8 +45,6 @@ const Chat = () => {
     return () => {
       socket.off("recieve", onReceive);
     };
-
-
   }, [socket]);
 
   const handleSend = () => {
