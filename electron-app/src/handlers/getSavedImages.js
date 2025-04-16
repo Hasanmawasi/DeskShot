@@ -19,18 +19,22 @@ const getSavedImages = async () => {
     const imageData = imageFiles.map((file) => {
       const filePath = path.join(galleryPath, file);
       const stats = fs.statSync(filePath);
-      const createdAt = stats.birthtime.toISOString().split('T')[0];
-      const sizeKB = (stats.size / 1024).toFixed(2);
-
       return {
         name: file,
         path: filePath.replace(/\\/g, '/'),
-        createdAt,
-        size: sizeKB,
+        createdAt: stats.birthtime.toISOString().split('T')[0],
+        rawCreatedAt: stats.birthtime, // keep original Date for sorting
+        size: (stats.size / 1024).toFixed(2),
       };
     });
 
-    return { success: true, images: imageData };
+    // Sort descending by creation date (most recent first)
+    imageData.sort((a, b) => b.rawCreatedAt - a.rawCreatedAt);
+
+    // Remove rawCreatedAt from final result
+    const cleanedImageData = imageData.map(({ rawCreatedAt, ...rest }) => rest);
+
+    return { success: true, images: cleanedImageData };
   } catch (err) {
     console.error('Error fetching images:', err);
     return { success: false, error: err.message };
