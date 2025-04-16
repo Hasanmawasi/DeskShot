@@ -33,6 +33,7 @@ const Home = () => {
   useEffect(() => {
 
     fetchImages();
+    // paths.reverse();
   }, []);
   return (
     <div className='images-container flex flex-row flex-wrap g-1'>
@@ -48,7 +49,7 @@ const Home = () => {
             deleteFunc={()=>{
               setIsModalOpen(true)
               setImageNameDelete(image.name)
-         
+
           }} />
 
           </>
