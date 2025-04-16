@@ -91,7 +91,7 @@ const Signup = () => {
             style="mt-4"
             />
             <div className='form-link mt-3'>
-            <p>Create an acount? <Link to="/login" className='link' >Login </Link></p>
+            <p>Create an acount? <Link to="/" className='link' >Login </Link></p>
 
             </div>
             <Button

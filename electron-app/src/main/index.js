@@ -1,9 +1,13 @@
 import { app, shell, BrowserWindow, ipcMain } from 'electron';
 import { join } from 'path';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
-import fs from 'fs'; // Make sure to import 'fs' for file operations
-import path from 'path'; // You need 'path' for manipulating file paths
+import fs from 'fs';
+import path from 'path';
 import icon from '../../resources/icon.png?asset';
+import saveImage from '../handlers/saveImages';
+import getSavedImages from '../handlers/getSavedImages';
+import deleteImage from '../handlers/deleteImages';
+
 
 function createWindow() {
   // Create the browser window.
@@ -22,96 +26,15 @@ function createWindow() {
     },
   });
 
-  // Handle the 'save-image' IPC event
-  ipcMain.handle('save-image', async (_, base64Image) => {
-    try {
-      // Decode base64 string
-      const buffer = Buffer.from(base64Image.split(',')[1], 'base64');
 
-      // Create the directory if it doesn't exist
-      const galleryPath = path.join(app.getPath('pictures'), 'electron-app');
-      if (!fs.existsSync(galleryPath)) fs.mkdirSync(galleryPath, { recursive: true });
+  ipcMain.handle('save-image', saveImage);
 
-      // Define the file name and path
-      const fileName = `image-${Date.now()}.jpg`;
-      const destPath = path.join(galleryPath, fileName);
+  ipcMain.handle('get-saved-images', getSavedImages);
 
-      // Save the image
-      fs.writeFileSync(destPath, buffer);
+  ipcMain.handle('delete-image', deleteImage);
 
-      // Get file stats
-      const stats = fs.statSync(destPath);
-      const createdAt = stats.birthtime.toISOString().split('T')[0];
-      return {
-        success: true,
-        path: destPath,
-        name: fileName,
-        createdAt, // Date object (can format in frontend if needed)
-        size: stats.size,           // In bytes
-      };
+ 
 
-    } catch (err) {
-      console.error('Error saving image:', err);
-      return { success: false, error: err.message };
-    }
-  });
-
-  ipcMain.handle('get-saved-images', async () => {
-    try {
-      const galleryPath = path.join(app.getPath('pictures'), 'electron-app');
-
-      // Check if folder exists
-      if (!fs.existsSync(galleryPath)) {
-        return { success: false, error: 'No images found.' };
-      }
-
-      const files = fs.readdirSync(galleryPath);
-
-      // Filter only image files
-      const imageFiles = files.filter((file) => /\.(jpg|jpeg|png|gif)$/i.test(file));
-
-      // Build an array of image info objects
-      const imageData = imageFiles.map((file) => {
-
-        const filePath = path.join(galleryPath, file);
-        const stats = fs.statSync(filePath);
-        const createdAt = stats.birthtime.toISOString().split('T')[0];
-        // Convert size to KB, rounded to 2 decimal places
-        const sizeKB = (stats.size / 1024).toFixed(2);
-        return {
-          name: file,
-          path: filePath.replace(/\\/g, '/'), // Normalize Windows paths
-          createdAt,
-          size: sizeKB, // in bytes
-        };
-      });
-
-      return { success: true, images: imageData };
-    } catch (err) {
-      console.error('Error fetching images:', err);
-      return { success: false, error: err.message };
-    }
-  });
-
-  ipcMain.handle('delete-image', async (_, imagePath) => {
-    try {
-      const galleryPath = path.join(app.getPath('pictures'), 'electron-app');
-      const filePath = path.join(galleryPath, imagePath);
-
-      // Check if the file exists
-      if (!fs.existsSync(filePath)) {
-        return { success: false, error: 'Image not found.' };
-      }
-
-      // Delete the image file
-      fs.unlinkSync(filePath);
-
-      return { success: true, message: 'Image deleted successfully.' };
-    } catch (err) {
-      console.error('Error deleting image:', err);
-      return { success: false, error: err.message };
-    }
-  });
   mainWindow.on('ready-to-show', () => {
     mainWindow.show();
   });
