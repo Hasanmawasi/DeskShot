@@ -1,0 +1,52 @@
+.chat-input{
+  min-width: 300px;
+  max-width: 800px;
+  background-color: white;
+  margin: 10px auto;
+  padding: 10px;
+  border-radius: 7px;
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
+
+}
+
+.width-100{
+width: 100%;
+}
+
+.input-con{
+  width: 90%;
+}
+.send-btn{
+  width: 10%;
+  border-radius: 0 7px 7px 0;
+}
+.input-border{
+  border-radius: 7px 0 0 7px;
+
+}
+.message{
+  margin: 6px 0;
+  padding: 5px;
+  background-color: white;
+  width: 80%;
+  border-radius: 7px;
+}
+.chat-box{
+  height: 75vh;
+  background-color: rgb(129, 180, 238);
+  width: 100%;
+  overflow-y: scroll;
+  padding: 10px;
+}
+.message-text{
+  font-size: 20px;
+  font-weight: 400;
+}
+.date{
+  font-size: small;
+  margin-left: 6px;
+  margin-top: 6px;
+}
+.flex-end{
+  align-self: flex-end;
+}

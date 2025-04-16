@@ -9,7 +9,7 @@ const ImageModal = ({ imageUrl , isOpen , onClose}) =>  {
     <>
 
         <div className="modal-overlay">
-          <div className="modal-content">
+          <div className="modal-content-image">
             <button className="close-button" onClick={ (e) => {
                                                 e.stopPropagation(); // Stop from re-triggering open
                                                 onClose();
