@@ -10,14 +10,13 @@ const chatSocket = (io, db)=> {
       socket.on("send", (message,token) => {
        const senderId = getID(token)
         console.log("Received message:", message);
-  
-        const query = "INSERT INTO chats (message, user_id) VALUES (?, ?)";
-        db.execute(query, [message, senderId], (err, results) => {
+        const isoDate = new Date()
+        const query = "INSERT INTO chats (message, user_id,created_at) VALUES (?, ?,?)";
+        db.execute(query, [message, senderId,isoDate], (err, results) => {
           if (err) {
             console.error("Insert failed:", err);
             return;
           }
-
           console.log("Insert success, ID:", results.insertId);
           //send the message for every one when someone send a message
           io.emit("recieve", message); 
